@@ -13,13 +13,13 @@ import (
 // baseURL is a base API URL of traQ v3
 const baseURL = "https://q.trap.jp/api/v3"
 
-// TraqWebhookWriter implements TraqWebhookWriter
+// TraqWebhookWriter implements io.Writer
 type TraqWebhookWriter struct {
 	id     string
 	secret string
 }
 
-// NewTraqWebhookWriter returns a new TraqWebhookWriter
+// NewTraqWebhookWriter returns a new pointer of TraqWebhookWriter
 func NewTraqWebhookWriter(id, secret string) *TraqWebhookWriter {
 	return &TraqWebhookWriter{id, secret}
 }
