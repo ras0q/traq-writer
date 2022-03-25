@@ -10,23 +10,29 @@ import (
 	"net/http"
 )
 
-// baseURL is a base API URL of traQ v3
-const baseURL = "https://q.trap.jp/api/v3"
+const (
+	// DefaultHTTPOrigin is the default HTTP origin of traQ
+	DefaultHTTPOrigin = "https://q.trap.jp"
+
+	// webhookAPIPath is the webhook API path of traQ v3
+	webhookAPIPath = "/api/v3/webhooks"
+)
 
 // TraqWebhookWriter implements io.Writer
 type TraqWebhookWriter struct {
 	id     string
 	secret string
+	origin string
 }
 
 // NewTraqWebhookWriter returns a new pointer of TraqWebhookWriter
-func NewTraqWebhookWriter(id, secret string) *TraqWebhookWriter {
-	return &TraqWebhookWriter{id, secret}
+func NewTraqWebhookWriter(id, secret, origin string) *TraqWebhookWriter {
+	return &TraqWebhookWriter{id, secret, origin}
 }
 
 // Write posts a message to traQ via webhook
 func (w *TraqWebhookWriter) Write(p []byte) (n int, err error) {
-	url := fmt.Sprintf("%s/webhooks/%s?embed=1", baseURL, w.id)
+	url := fmt.Sprintf("%s%s/%s?embed=1", w.origin, webhookAPIPath, w.id)
 
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(p))
 	if err != nil {

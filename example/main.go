@@ -11,6 +11,7 @@ func main() {
 	w := traqwriter.NewTraqWebhookWriter(
 		os.Getenv("TRAQ_WEBHOOK_ID"),
 		os.Getenv("TRAQ_WEBHOOK_SECRET"),
+		traqwriter.DefaultHTTPOrigin,
 	)
 
 	// post a message to traQ via webhook
