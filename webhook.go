@@ -20,14 +20,15 @@ const (
 
 // TraqWebhookWriter implements io.Writer
 type TraqWebhookWriter struct {
-	id     string
-	secret string
-	origin string
+	id        string
+	secret    string
+	origin    string
+	channelID string
 }
 
 // NewTraqWebhookWriter returns a new pointer of TraqWebhookWriter
 func NewTraqWebhookWriter(id, secret, origin string) *TraqWebhookWriter {
-	return &TraqWebhookWriter{id, secret, origin}
+	return &TraqWebhookWriter{id, secret, origin, ""}
 }
 
 // Write posts a message to traQ via webhook
@@ -45,6 +46,10 @@ func (w *TraqWebhookWriter) Write(p []byte) (n int, err error) {
 		req.Header.Set("X-TRAQ-Signature", CalcHMACSHA1(w.secret, p))
 	}
 
+	if w.useCustomChannelID() {
+		req.Header.Set("X-TRAQ-Channel-Id", w.channelID)
+	}
+
 	httpClient := http.DefaultClient
 	if _, err = httpClient.Do(req); err != nil {
 		return 0, fmt.Errorf("failed to post a request: %w", err)
@@ -53,8 +58,24 @@ func (w *TraqWebhookWriter) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-func (w *TraqWebhookWriter)isSecureMethod() bool {
+// SetChannelID sets a channel ID
+func (w *TraqWebhookWriter) SetChannelID(channelID string) {
+	w.channelID = channelID
+}
+
+// ResetChannelID resets a channel ID
+func (w *TraqWebhookWriter) ResetChannelID() {
+	w.channelID = ""
+}
+
+// isSecureMethod returns true if webhook uses secure method
+func (w *TraqWebhookWriter) isSecureMethod() bool {
 	return len(w.secret) > 0
+}
+
+// useCustomChannelID returns true if webhook uses custom channel ID
+func (w *TraqWebhookWriter) useCustomChannelID() bool {
+	return len(w.channelID) > 0
 }
 
 // CalcHMACSHA1 calculates an HMAC with SHA1
