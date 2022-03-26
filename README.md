@@ -1,6 +1,6 @@
 # traq-writer
 
-[![godoc-badge]][godoc-url]
+[![godoc-badge]][godoc-url] [![goreport-badge]][goreport-url]
 
 traq-writer posts messages to traQ via webhook.
 
@@ -12,5 +12,7 @@ After executing this, you can see the following message in traQ.
 
 ![image](https://user-images.githubusercontent.com/66677201/160043071-930cb25f-e52a-4055-afdd-f151eb653260.png)
 
-[godoc-url]: https://pkg.go.dev/github.com/Ras96/traq-writer
 [godoc-badge]: https://pkg.go.dev/badge/github.com/Ras96/traq-writer
+[godoc-url]: https://pkg.go.dev/github.com/Ras96/traq-writer
+[goreport-badge]: https://goreportcard.com/badge/github.com/Ras96/traq-writer
+[goreport-url]: https://goreportcard.com/report/github.com/Ras96/traq-writer
