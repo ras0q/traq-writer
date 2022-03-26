@@ -41,7 +41,7 @@ func (w *TraqWebhookWriter) Write(p []byte) (n int, err error) {
 
 	req.Header.Set("Content-Type", "text/plain; charset=utf-8")
 
-	if isSecureMethod([]byte(w.secret)) {
+	if w.isSecureMethod() {
 		req.Header.Set("X-TRAQ-Signature", CalcHMACSHA1(w.secret, p))
 	}
 
@@ -53,16 +53,16 @@ func (w *TraqWebhookWriter) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
+func (w *TraqWebhookWriter)isSecureMethod() bool {
+	return len(w.secret) > 0
+}
+
 // CalcHMACSHA1 calculates an HMAC with SHA1
 func CalcHMACSHA1(secret string, p []byte) string {
 	mac := hmac.New(sha1.New, []byte(secret))
 	mac.Write(p)
 
 	return hex.EncodeToString(mac.Sum(nil))
-}
-
-func isSecureMethod(secret []byte) bool {
-	return len(secret) > 0
 }
 
 // Interface guard
