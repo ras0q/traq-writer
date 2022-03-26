@@ -39,8 +39,11 @@ func (w *TraqWebhookWriter) Write(p []byte) (n int, err error) {
 		return 0, fmt.Errorf("failed to create a new request: %w", err)
 	}
 
-	req.Header.Set("X-TRAQ-Signature", CalcHMACSHA1(w.secret, p))
 	req.Header.Set("Content-Type", "text/plain; charset=utf-8")
+
+	if isSecureMethod([]byte(w.secret)) {
+		req.Header.Set("X-TRAQ-Signature", CalcHMACSHA1(w.secret, p))
+	}
 
 	httpClient := http.DefaultClient
 	if _, err = httpClient.Do(req); err != nil {
@@ -56,6 +59,10 @@ func CalcHMACSHA1(secret string, p []byte) string {
 	mac.Write(p)
 
 	return hex.EncodeToString(mac.Sum(nil))
+}
+
+func isSecureMethod(secret []byte) bool {
+	return len(secret) > 0
 }
 
 // Interface guard
