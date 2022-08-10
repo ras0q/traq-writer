@@ -51,8 +51,10 @@ func (w *TraqWebhookWriter) Write(p []byte) (n int, err error) {
 	}
 
 	httpClient := http.DefaultClient
-	if _, err = httpClient.Do(req); err != nil {
+	if res, err := httpClient.Do(req); err != nil {
 		return 0, fmt.Errorf("failed to post a request: %w", err)
+	} else if res.StatusCode != http.StatusNoContent {
+		return 0, fmt.Errorf("failed to post a request: %s", res.Status)
 	}
 
 	return len(p), nil
