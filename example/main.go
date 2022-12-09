@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	traqwriter "github.com/Ras96/traq-writer"
+	traqwriter "github.com/ras0q/traq-writer"
 )
 
 func main() {
