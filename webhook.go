@@ -24,16 +24,17 @@ type TraqWebhookWriter struct {
 	secret    string
 	origin    string
 	channelID string
+	embed     bool
 }
 
 // NewTraqWebhookWriter returns a new pointer of TraqWebhookWriter
 func NewTraqWebhookWriter(id, secret, origin string) *TraqWebhookWriter {
-	return &TraqWebhookWriter{id, secret, origin, ""}
+	return &TraqWebhookWriter{id, secret, origin, "", true}
 }
 
 // Write posts a message to traQ via webhook
 func (w *TraqWebhookWriter) Write(p []byte) (n int, err error) {
-	url := fmt.Sprintf("%s%s/%s?embed=1", w.origin, webhookAPIPath, w.id)
+	url := fmt.Sprintf("%s%s/%s?embed=%t", w.origin, webhookAPIPath, w.id, w.embed)
 
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(p))
 	if err != nil {
@@ -68,6 +69,11 @@ func (w *TraqWebhookWriter) SetChannelID(channelID string) {
 // ResetChannelID resets a channel ID
 func (w *TraqWebhookWriter) ResetChannelID() {
 	w.channelID = ""
+}
+
+// SetEmbed sets whether to embed a message
+func (w *TraqWebhookWriter) SetEmbed(embed bool) {
+	w.embed = embed
 }
 
 // isSecureMethod returns true if webhook uses secure method
